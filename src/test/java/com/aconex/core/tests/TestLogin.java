@@ -1,5 +1,6 @@
 package com.aconex.core.tests;
 
+import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
@@ -14,7 +15,6 @@ public class TestLogin {
 	@BeforeSuite
 	public void preCondition() throws InterruptedException{
 		loginPage = new LoginPage();
-		Thread.sleep(10000);
 	}
 	
 	@Test(groups="negative")
@@ -55,7 +55,7 @@ public class TestLogin {
 		
 		TasksPage tasksPage = loginPage.typeUserName("poleary").typePassword("ac0n3x72").doLoginExpectingSuccess();
 		Thread.sleep(5000);
-		tasksPage.validateTasksPage();
+		Assert.assertEquals(tasksPage.getTitle(),"Status Page","Expected: "+"My Tasks"+ "but found: "+tasksPage.getTitle());
 
 	}
 

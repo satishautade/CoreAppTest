@@ -8,7 +8,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.LoadableComponent;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 import com.aconex.core.utils.DriverManager;
@@ -17,7 +19,7 @@ import com.aconex.core.utils.PropertyReader;
 
 public class LoginPage extends LoadableComponent<LoginPage>{
 
-	private static String pageUrl;
+	private static String appUrl;
 	private static WebDriver driver;
 
 	@FindBy(how=How.ID, using="userName")
@@ -31,7 +33,7 @@ public class LoginPage extends LoadableComponent<LoginPage>{
 
 	public LoginPage(){
 		this.driver=DriverManager.getDriver();
-		this.pageUrl=PropertyReader.getAppUrl();
+		this.appUrl=PropertyReader.getAppUrl();
 		PageFactory.initElements(driver, this);
 		this.get();
 	}
@@ -39,7 +41,7 @@ public class LoginPage extends LoadableComponent<LoginPage>{
 	@Override
 	protected void load(){
 		driver.manage().timeouts().implicitlyWait(40, TimeUnit.SECONDS);
-		driver.get(pageUrl);
+		driver.get(appUrl);
 		try {
 			Thread.sleep(30000);
 		} catch (InterruptedException e) {
@@ -50,8 +52,8 @@ public class LoginPage extends LoadableComponent<LoginPage>{
 	@Override
 	protected void isLoaded() throws Error {
 		String currentUrl=driver.getCurrentUrl();
-		if(!currentUrl.equalsIgnoreCase(pageUrl)){
-			driver.get(pageUrl);
+		if(!currentUrl.equalsIgnoreCase(appUrl)){
+			driver.get(appUrl);
 		}
 	}
 	
@@ -61,7 +63,7 @@ public class LoginPage extends LoadableComponent<LoginPage>{
 	}
 
 	public LoginPage typeUserName(String userName){
-//		new WebDriverWait(driver,10).until(ExpectedConditions.presenceOfElementLocated(By.id("userName")));
+		new WebDriverWait(driver,10).until(ExpectedConditions.presenceOfElementLocated(By.id("userName")));
 		inputUserName.sendKeys(userName);
 		return this;
 	}
@@ -84,6 +86,6 @@ public class LoginPage extends LoadableComponent<LoginPage>{
 	public TasksPage doLoginExpectingSuccess() throws InterruptedException {
 		buttonLogin.click();
 		Thread.sleep(5000);
-		return new TasksPage();
+		return PageFactory.initElements(driver, TasksPage.class);
 	}
 }
